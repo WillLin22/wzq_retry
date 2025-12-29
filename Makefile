@@ -3,7 +3,7 @@ SRC_DIR = src
 INCLUDE_DIR = include
 BUILD_DIR = build
 
-all: compile run
+all: compile
 
 dir:
 	mkdir -p $(BUILD_DIR)
