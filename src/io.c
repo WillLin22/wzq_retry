@@ -1,4 +1,6 @@
-#include <input.h>
+#include "eval.h"
+#include "state.h"
+#include <io.h>
 #include <stdio.h>
 #include <log.h>
 
@@ -53,5 +55,16 @@ error:
     while(c != '\n' && c != EOF)
         c = getchar();
     return 1;
+}
+
+
+void print_over(GameState* state)
+{
+    if(state->score < WIN && state->score > -WIN)
+    {
+        log(ERROR, "%s: You should not enter this with score %d!", __func__ ,state->score);
+        return ;
+    }
+    printf("%s wins!\n", state->score >= WIN ? "BLACK" : "WHITE");
 }
 

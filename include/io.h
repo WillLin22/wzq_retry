@@ -6,5 +6,5 @@
 #include<stdio.h>
 
 int input_place(Point* pos);
-
+void print_over(GameState* state);
 #endif

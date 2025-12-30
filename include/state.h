@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+//保证非EMPTY的每一种情况都只占独立bit
 typedef enum Pic{
-    EMPTY = 0, BLACK, WHITE, BLACK_CURRENT, WHITE_CURRENT, PIC_RECORD_TOTAL
+    EMPTY = 0, BLACK, WHITE, INVALID = 4, PIC_RECORD_TOTAL
 }Pic;
 
 typedef struct Point{
@@ -16,14 +16,22 @@ typedef struct Point{
 
 typedef struct GameState{
     int currentPlayer;
-    Point last_place;
+    Point current_place;
+    int score;
 }GameState;
 
 extern GameState state;
 
 void gamestate_init(GameState* state);
 void gamestate_place(GameState* state, Point pos);
-void gamestate_turn_update(GameState* state);
+static inline Point gamestate_getcurrent(GameState* state)
+{
+    return state->current_place;
+}
+static inline int gamestate_getscore(GameState* state)
+{
+    return state->score;
+}
 
 
 #endif

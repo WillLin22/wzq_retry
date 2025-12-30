@@ -34,21 +34,15 @@ char Pics[PIC_RECORD_TOTAL];
 int arrayForInnerBoardLayout[SIZE][SIZE];
 
 void initRecordBorard(void);
-void innerLayoutToDisplayArray(void);
+void innerLayoutToDisplayArray(GameState*);
 void displayBoard(void);
 
-static int current_to_past(Point pos)
+static char getcurrent(Pic side)
 {
-	if(arrayForInnerBoardLayout[pos.x][pos.y] == BLACK_CURRENT)
-		arrayForInnerBoardLayout[pos.x][pos.y] = BLACK;
-	else if(arrayForInnerBoardLayout[pos.x][pos.y] == WHITE_CURRENT)
-		arrayForInnerBoardLayout[pos.x][pos.y] = WHITE;
-	else
-	{
-		log(ERROR, "%s:"POS_FMT_STR" is not current!\n", __func__, POS_FMT(pos.x, pos.y));
-		return 1;
-	}
-	return 0;
+	if(side != BLACK && side != WHITE)
+		log(ERROR, "%s has unexpected input %d!", __func__, side);
+	return side == WHITE ? play2CurrentPic : play1CurrentPic;// 默认返回黑棋
+
 }
 static int isvalid(Point pos)
 {
@@ -62,14 +56,12 @@ void board_init()
 {
 	Pics[BLACK] = play1Pic;
 	Pics[WHITE] = play2Pic;
-	Pics[BLACK_CURRENT] = play1CurrentPic;
-	Pics[WHITE_CURRENT] = play2CurrentPic;
 	initRecordBorard();
 }
 
 void board_display()
 {
-	innerLayoutToDisplayArray();
+	innerLayoutToDisplayArray(&state);
 	displayBoard();
 }
 
@@ -84,11 +76,9 @@ int board_place(Point pos, GameState *state)
 			printf("Error: Input out of range!\n");
 		return 1;
 	}
-	Pic pic = state->currentPlayer == BLACK ? BLACK_CURRENT : WHITE_CURRENT;
+	Pic pic = state->currentPlayer;
 	arrayForInnerBoardLayout[pos.x][pos.y] = pic;
-	current_to_past(state->last_place);
 	gamestate_place(state, pos);
-	gamestate_turn_update(state);
 	return 0;
 }
 
@@ -99,7 +89,8 @@ void initRecordBorard(void){
 
 
 //将arrayForInnerBoardLayout中记录的棋子位置，转化到arrayForDisplayBoard中
-void innerLayoutToDisplayArray(void){
+void innerLayoutToDisplayArray(GameState* state){
+	Point current = gamestate_getcurrent(state);
 	for(int i = 0; i < SIZE; i++)
 	{
 		strcpy(arrayForDisplayBoard[i], arrayForEmptyBoard[i]);
@@ -107,6 +98,8 @@ void innerLayoutToDisplayArray(void){
 		{
 			if(arrayForInnerBoardLayout[i][j] != 0)
 				arrayForDisplayBoard[i][j*CHARSIZE] = Pics[arrayForInnerBoardLayout[i][j]];
+			if(i == current.x && j == current.y)
+				arrayForDisplayBoard[i][j*CHARSIZE] = getcurrent(Pics[arrayForInnerBoardLayout[i][j]]);
 		}
 	}
 
