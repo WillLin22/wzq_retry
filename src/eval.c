@@ -52,7 +52,7 @@ static int win_match(int** record, int scan_radius)
     int res = 0;
     for(int dir = 0; dir < DIR_TOTAL; dir++)
         res |= dirs[dir];
-    if(res >= PIC_RECORD_TOTAL)
+    if(res != BLACK && res != WHITE)
     {
         log(ERROR, "%s: Multiple winner detected! res:%d", __func__, res);
         return 0;
