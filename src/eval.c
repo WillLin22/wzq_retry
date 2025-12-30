@@ -82,6 +82,7 @@ int evaluation(int board[SIZE][SIZE], GameState *state)
                 int tot_checkers = sizeof(checkers)/sizeof(int*);
                 for(int k = 0; k < tot_checkers; k++)
                     score += checkers[k](recordp, scan_radius);
+                free(recordboard);
             }
     return score;
 }
